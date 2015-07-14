@@ -1,0 +1,110 @@
+#!/bin/bash
+#
+# Script to deodex an apps
+#
+# Brandon McAnsh a.k.a bmc08gt (C) 2015
+# Heavliy edited by Aaahh
+#
+#set -x
+
+APK=$1
+if [ $APK != "*.apk" ]; then
+	APK=$APK.apk
+fi
+NAME=${APK%%.*}
+
+HOME=$(pwd)
+
+FIND=$(find)
+
+echo "Finding App"
+FULL_PATH=$(find ${HOME}/system -name $APK)
+if [ -z $FULL_PATH ]; then
+    echo "Unable to determine app's location"
+    echo "Exiting...."
+    exit 1
+fi
+DIR_PATH=${FULL_PATH%%/$APK}
+echo $FULL_PATH "detected."
+echo ""
+
+echo "Checking app's architecture"
+
+ARCH=$(find $DIR_PATH -name arm)
+if [ -z $ARCH ]; then
+    ARCH=$(find $DIR_PATH -name arm64)
+    if [ -z $ARCH ]; then
+        echo "This app is already deodexed."
+        echo "Exiting...."
+        exit 1
+    else
+        ARCH='arm64'
+    fi
+else
+    ARCH='arm'
+fi
+
+echo $ARCH "detected."
+echo ""
+
+if [ -d ${HOME}/*.apk ] || [ -d ${HOME}/classes.dex ]; then
+    echo "Cleaning up previous operations"
+    echo ""
+fi
+
+if [ -d ${HOME}/*.apk ]; then
+rm *.apk
+fi
+
+if [ -d ${HOME}/classes.dex ]; then
+
+    rm classes.dex
+fi
+
+echo "Creating workspace"
+echo ""
+
+if [ -d tmp ]; then
+    (cd tmp; find * -maxdepth 0 -name 'framework' -prune -o -exec rm -rf '{}' ';')
+else
+    mkdir tmp
+    echo "Pulling framework"
+    echo ""
+    (mkdir tmp/framework; cd tmp/framework; cp -R ${HOME}/system/framework/* .)
+    if [ ! -d tmp/framework/$ARCH/odex ]; then
+        echo "Extracting class-path from boot.oat"
+        echo ""
+        ${HOME}/oat2dex boot tmp/framework/$ARCH/boot.oat
+    fi
+fi
+
+echo "Pulling $NAME's files"
+echo ""
+(mkdir tmp/$NAME; cd tmp/$NAME; cp -R ${DIR_PATH}/* .)
+
+cp tmp/$NAME/$APK ${HOME}/
+
+echo "Creating compatible dex for $APK"
+echo ""
+${HOME}/oat2dex tmp/$NAME/oat/$ARCH/$NAME.odex tmp/framework/$ARCH/odex
+
+echo "Performing smali operations"
+echo ""
+#${HOME}/baksmali -a 21 -x tmp/$NAME/oat/$ARCH/$NAME.dex -d system/framework -o tmp/smali
+${HOME}/oat2dex smali tmp/$NAME/oat/$ARCH/$NAME.dex
+mkdir ${HOME}/tmp/smali
+cp -R tmp/$NAME/oat/$ARCH/$NAME/* tmp/smali
+
+${HOME}/smali tmp/smali 
+
+echo "Pushing dex into apk"
+echo ""
+zip -gjq $APK classes.dex
+# rm classes.dex
+
+mkdir -p out
+cp $APK ${HOME}/out/
+
+echo "Out:" ${HOME}"/out/"$APK
+echo ""
+exit 0

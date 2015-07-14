@@ -1,0 +1,3 @@
+[submodule "resources/oat2dex"]
+	path = resources/oat2dex
+	url = https://github.com/testwhat/SmaliEx.git
