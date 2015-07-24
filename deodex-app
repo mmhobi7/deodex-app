@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script to deodex an app or framework
+# Script to deodex an apps or frameworks
 #
 # Brandon McAnsh a.k.a bmc08gt (C) 2015
 # Heavliy edited by Aaahh
@@ -218,9 +218,7 @@ echo "Creating compatible dex for $FILE"
 echo -e ${LGREY}
 ${HOME}/oat2dex ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.odex ${HOME}/tmp/framework/$ARCH/odex
 
-echo -e ${NC}
-echo "Performing smali operations"
-echo -e ${LGREY}
+echo -e ${NC}"Performing smali operations"${LGREY}
 
 ${HOME}/oat2dex smali ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.dex
 mkdir ${HOME}/tmp/smali
