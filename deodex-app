@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script to deodex an apps
+# Script to deodex an app or framework
 #
 # Brandon McAnsh a.k.a bmc08gt (C) 2015
 # Heavliy edited by Aaahh
@@ -158,12 +158,21 @@ fi
 
 DIR_PATH=${FULL_PATH%%/$FILE}
 
+if [ $MODE = 2 ]; then
+    ODEX_PATH=$DIR_PATH/oat/arm
+    echo $ODEX_PATH
+fi
+
 echo -e ${YELLOW}$FULL_PATH${NC} "detected."
 echo ""
 
 echo "Checking app's architecture,"
 
-ARCH=$(find $DIR_PATH -name arm)
+if [ $MODE = 2 ]; then
+    ARCH=$(find $ODEX_PATH -name arm)
+else
+    ARCH=$(find $DIR_PATH -name arm)
+fi
 if [ -z $ARCH ]; then
     ARCH=$(find $DIR_PATH -name arm64)
     if [ -z $ARCH ]; then
@@ -200,6 +209,7 @@ fi
 
 echo "Pulling $NAME's files"
 echo ""
+
 (mkdir ${HOME}/tmp/$NAME; cd ${HOME}/tmp/$NAME; cp -R ${DIR_PATH}/* .)
 
 cp ${HOME}/tmp/$NAME/$FILE ${HOME}/tmp
@@ -211,7 +221,7 @@ ${HOME}/oat2dex ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.odex ${HOME}/tmp/framework/$AR
 echo -e ${NC}
 echo "Performing smali operations"
 echo -e ${LGREY}
-#${HOME}/baksmali -a 21 -x ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.dex -d system/framework -o ${HOME}/tmp/smali
+
 ${HOME}/oat2dex smali ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.dex
 mkdir ${HOME}/tmp/smali
 cp -R ${HOME}/tmp/$NAME/oat/$ARCH/$NAME/* ${HOME}/tmp/smali
