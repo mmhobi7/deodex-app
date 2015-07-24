@@ -12,7 +12,7 @@ NC='\033[0m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 LGREY='\033[0;37m'
-BLUE='\033[0;34m'
+BLUE='\033[0;36m'
 
 case $1 in
     -a) echo ""
@@ -58,27 +58,78 @@ case $1 in
     -*) echo ""
         echo "Unrecognized flag"
         shift ;;
-    *) FILE=$1    
+    *) FILE=$1
     ;;
 esac
 
+
+
 if [ -z "$MODE" ]; then
-    if [[ "$FILE" = *.apk ]]; then
+
+case $2 in
+    -a) echo ""
+        echo -e "${BLUE}Apk${NC} flag detected"
         MODE=1
-        echo ""
-        echo -e "${BLUE}Apk${NC} detected"
-    fi
-    if [[ "$FILE" = *.jar ]]; then
+        if ! [[ "$FILE" = *.apk ]]; then
+            FILE=$FILE.apk
+        fi
+        shift ;;
+    -apk) echo ""
+        echo -e "${BLUE}Apk${NC} flag detected"
+        MODE=1
+        if ! [[ "$FILE" = *.apk ]]; then
+            FILE=$FILE.apk
+        fi
+        shift ;;
+    -j) echo ""
+        echo -e "${BLUE}Framework${NC} flag detected"
         MODE=2
-        echo ""
-        echo -e "${BLUE}Framework${NC} detected"
-    fi
+        if ! [[ "$FILE" = *.jar ]]; then
+            FILE=$FILE.jar
+        fi
+        shift ;;
+    -jar) echo ""
+        echo -e "${BLUE}Framework${NC} flag detected"
+        MODE=2
+        if ! [[ "$FILE" = *.jar ]]; then
+            FILE=$FILE.jar
+        fi
+        shift ;;
+    -h) echo ""
+        echo " -h || -help : Shows this message"
+        echo " -a || -apk (file) : Sets apk flag"
+        echo " -j || -jar (file) : Sets framework flag"
+        exit 0
+        shift ;;
+    -help) echo ""
+        echo " -h || -help : Shows this message"
+        echo " -a || -apk (file) : Sets apk flag"
+        echo " -j || -jar (file) : Sets framework flag"
+        exit 0
+        shift ;;
+    -*) echo ""
+        echo "Unrecognized flag"  
+    ;;
+esac
+
     if [ -z "$MODE" ]; then
-        echo ""
-        echo -e "${RED}Please specify the file extension or add a flag"
-        echo "Use -h or -help for more help"
-        echo -e "Exiting...${NC}"
-        exit 1
+        if [[ "$FILE" = *.apk ]]; then
+            MODE=1
+            echo ""
+            echo -e "${BLUE}Apk${NC} detected"
+        fi
+        if [[ "$FILE" = *.jar ]]; then
+            MODE=2
+            echo ""
+            echo -e "${BLUE}Framework${NC} detected"
+        fi
+        if [ -z "$MODE" ]; then
+           echo ""
+           echo -e "${RED}Please specify the file extension or add a flag"
+           echo "Use -h or -help for more help"
+           echo -e "Exiting...${NC}"
+           exit 1
+        fi
     fi
 fi
 
