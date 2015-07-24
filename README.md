@@ -8,6 +8,11 @@ Deodex-app deodexs an apk from a system folder by running one command:
     ./deodex-app -a HTMLViewer.apk
     or
     ./deodex-app -a HTMLViewer
+    or
+    ./deodex-app HTMLViewer -a
+    or
+    ./deodex-app HTMLViewer.apk -a
+
 That's it, the script will determine the apk's location in system, check if it's already deodexed, pull the neccessary
 files to perform the deodexing, and will package the apk back for install.
 
