@@ -56,32 +56,32 @@ else
     mkdir tmp
     echo "Pulling framework"
     echo ""
-    (mkdir${HOME}/tmp/framework; cd${HOME}/tmp/framework; cp -R ${HOME}/system/framework/* .)
-    if [ ! -d${HOME}/tmp/framework/$ARCH/odex ]; then
+    (mkdir ${HOME}/tmp/framework; cd ${HOME}/tmp/framework; cp -R ${HOME}/system/framework/* .)
+    if [ ! -d ${HOME}/tmp/framework/$ARCH/odex ]; then
         echo "Extracting class-path from boot.oat"
         echo ""
-        ${HOME}/oat2dex boot${HOME}/tmp/framework/$ARCH/boot.oat
+        ${HOME}/oat2dex boot ${HOME}/tmp/framework/$ARCH/boot.oat
     fi
 fi
 
 echo "Pulling $NAME's files"
 echo ""
-(mkdir${HOME}/tmp/$NAME; cd${HOME}/tmp/$NAME; cp -R ${DIR_PATH}/* .)
+(mkdir ${HOME}/tmp/$NAME; cd ${HOME}/tmp/$NAME; cp -R ${DIR_PATH}/* .)
 
-cp${HOME}/tmp/$NAME/$APK ${HOME}/tmp
+cp ${HOME}/tmp/$NAME/$APK ${HOME}/tmp
 
 echo "Creating compatible dex for $APK"
 echo ""
-${HOME}/oat2dex${HOME}/tmp/$NAME/oat/$ARCH/$NAME.odex${HOME}/tmp/framework/$ARCH/odex
+${HOME}/oat2dex ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.odex ${HOME}/tmp/framework/$ARCH/odex
 
 echo "Performing smali operations"
 echo ""
-#${HOME}/baksmali -a 21 -x${HOME}/tmp/$NAME/oat/$ARCH/$NAME.dex -d system/framework -o${HOME}/tmp/smali
-${HOME}/oat2dex smali${HOME}/tmp/$NAME/oat/$ARCH/$NAME.dex
+#${HOME}/baksmali -a 21 -x ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.dex -d system/framework -o ${HOME}/tmp/smali
+${HOME}/oat2dex smali ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.dex
 mkdir ${HOME}/tmp/smali
-cp -R${HOME}/tmp/$NAME/oat/$ARCH/$NAME/*${HOME}/tmp/smali
+cp -R ${HOME}/tmp/$NAME/oat/$ARCH/$NAME/* ${HOME}/tmp/smali
 
-${HOME}/smali${HOME}/tmp/smali -o ${HOME}/tmp/classes.dex 
+${HOME}/smali ${HOME}/tmp/smali -o ${HOME}/tmp/classes.dex 
 
 echo "Pushing dex into apk"
 echo ""
