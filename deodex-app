@@ -6,18 +6,84 @@
 # Heavliy edited by Aaahh
 #
 
-APK=$1
-if [ $APK != "*.apk" ]; then
-	APK=$APK.apk
+FILE=$2
+
+case $1 in
+    -a) echo ""
+        echo "Apk Flag detected"
+        MODE=1
+        if ! [ "$FILE" = *.apk ]; then
+            FILE=$FILE.apk
+        fi
+        shift ;;
+    -apk) echo ""
+        echo "Apk Flag detected"
+        MODE=1
+        if ! [ "$FILE" = *.apk ]; then
+            FILE=$FILE.apk
+        fi
+        shift ;;
+    -j) echo ""
+        echo "Framework Flag detected"
+        MODE=2
+        if ! [ "$FILE" = *.jar ]; then
+            FILE=$FILE.jar
+        fi
+        shift ;;
+    -jar) echo ""
+        echo "Framework Flag detected"
+        MODE=2
+        if ! [ "$FILE" = *.jar ]; then
+            FILE=$FILE.jar
+        fi
+        shift ;;
+    -h) echo ""
+        echo " -h || -help : Shows this message"
+        echo " -a || -apk (file) : Sets apk flag"
+        echo " -j || -jar (file) : Sets framework flag"
+        exit 0
+        shift ;;
+    -help) echo ""
+        echo " -h || -help : Shows this message"
+        echo " -a || -apk (file) : Sets apk flag"
+        echo " -j || -jar (file) : Sets framework flag"
+        exit 0
+        shift ;;
+    -*) echo ""
+        echo "Unrecognized Flag"
+        shift ;;
+    *) FILE=$1    
+    ;;
+esac
+
+if [ -z $MODE ]; then
+    if [ "$FILE" = *.apk ]; then
+        MODE=1
+        echo ""
+        echo "Apk detected"
+    fi
+    if [ "$FILE" = *.jar ]; then
+        MODE=2
+        echo ""
+        echo "Framework detected"
+    fi
+    if [ -z $MODE ]; then
+        echo ""
+        echo "Please specify the file extension or add a flag"
+        echo "Use -h or -help for more help"
+        echo "Exiting...."
+        exit 1
+    fi
 fi
 
-NAME=${APK%%.*}
+NAME=${FILE%%.*}
 
 HOME=$(pwd)
 
 FIND=$(find)
 
-echo "Finding App"
+echo ""
+echo "Finding App" $NAME 
 
 if ! [ -d ${HOME}/system ]; then
     echo ""
@@ -25,14 +91,15 @@ if ! [ -d ${HOME}/system ]; then
     echo "Exiting...."
     exit 1
 fi
-FULL_PATH=$(find ${HOME}/system -name $APK)
+
+FULL_PATH=$(find ${HOME}/system -name $FILE)
 if [ -z $FULL_PATH ]; then
     echo "Unable to determine app's location"
     echo "Exiting...."
     exit 1
 fi
 
-DIR_PATH=${FULL_PATH%%/$APK}
+DIR_PATH=${FULL_PATH%%/$FILE}
 
 echo $FULL_PATH "detected."
 echo ""
@@ -77,9 +144,9 @@ echo "Pulling $NAME's files"
 echo ""
 (mkdir ${HOME}/tmp/$NAME; cd ${HOME}/tmp/$NAME; cp -R ${DIR_PATH}/* .)
 
-cp ${HOME}/tmp/$NAME/$APK ${HOME}/tmp
+cp ${HOME}/tmp/$NAME/$FILE ${HOME}/tmp
 
-echo "Creating compatible dex for $APK"
+echo "Creating compatible dex for $FILE"
 echo ""
 ${HOME}/oat2dex ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.odex ${HOME}/tmp/framework/$ARCH/odex
 
@@ -92,13 +159,13 @@ cp -R ${HOME}/tmp/$NAME/oat/$ARCH/$NAME/* ${HOME}/tmp/smali
 
 ${HOME}/smali ${HOME}/tmp/smali -o ${HOME}/tmp/classes.dex 
 
-echo "Pushing dex into apk"
+echo "Pushing dex into" $NAME
 echo ""
-zip -gjq $APK ${HOME}/tmp/classes.dex
+zip -gjq $FILE ${HOME}/tmp/classes.dex
 
 mkdir -p ${HOME}/out
-cp $APK ${HOME}/out/
+cp $FILE ${HOME}/out/
 
-echo "Out:" ${HOME}"/out/"$APK
+echo "Out:" ${HOME}"/out/"$FILE
 echo ""
 exit 0
