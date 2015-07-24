@@ -1,4 +1,4 @@
-Deodex-app
+deodex-app
 
 Copy your system dir to the dir of the script
 Deodex-app deodexs an apk from a system folder by running one command:
