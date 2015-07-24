@@ -8,32 +8,37 @@
 
 FILE=$2
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+LGREY='\033[0;37m'
+NC='\033[0m'
+
 case $1 in
     -a) echo ""
         echo "Apk Flag detected"
         MODE=1
-        if ! [ "$FILE" = *.apk ]; then
+        if ! [[ "$FILE" = *.apk ]]; then
             FILE=$FILE.apk
         fi
         shift ;;
     -apk) echo ""
         echo "Apk Flag detected"
         MODE=1
-        if ! [ "$FILE" = *.apk ]; then
+        if ! [[ "$FILE" = *.apk ]]; then
             FILE=$FILE.apk
         fi
         shift ;;
     -j) echo ""
         echo "Framework Flag detected"
         MODE=2
-        if ! [ "$FILE" = *.jar ]; then
+        if ! [[ "$FILE" = *.jar ]]; then
             FILE=$FILE.jar
         fi
         shift ;;
     -jar) echo ""
         echo "Framework Flag detected"
         MODE=2
-        if ! [ "$FILE" = *.jar ]; then
+        if ! [[ "$FILE" = *.jar ]]; then
             FILE=$FILE.jar
         fi
         shift ;;
@@ -56,22 +61,22 @@ case $1 in
     ;;
 esac
 
-if [ -z $MODE ]; then
-    if [ "$FILE" = *.apk ]; then
+if [ -z "$MODE" ]; then
+    if [[ "$FILE" = *.apk ]]; then
         MODE=1
         echo ""
         echo "Apk detected"
     fi
-    if [ "$FILE" = *.jar ]; then
+    if [[ "$FILE" = *.jar ]]; then
         MODE=2
         echo ""
         echo "Framework detected"
     fi
-    if [ -z $MODE ]; then
+    if [ -z "$MODE" ]; then
         echo ""
-        echo "Please specify the file extension or add a flag"
+        echo -e "${RED}Please specify the file extension or add a flag"
         echo "Use -h or -help for more help"
-        echo "Exiting...."
+        echo -e "Exiting...${NC}"
         exit 1
     fi
 fi
@@ -87,15 +92,15 @@ echo "Finding App" $NAME
 
 if ! [ -d ${HOME}/system ]; then
     echo ""
-    echo "Please copy your /system dir here"
-    echo "Exiting...."
+    echo -e "${RED}Please copy your /system dir here"
+    echo -e "Exiting...${NC}"
     exit 1
 fi
 
 FULL_PATH=$(find ${HOME}/system -name $FILE)
 if [ -z $FULL_PATH ]; then
-    echo "Unable to determine app's location"
-    echo "Exiting...."
+    echo -e "${RED}Unable to determine app's location"
+    echo -e "Exiting...${NC}"
     exit 1
 fi
 
@@ -110,8 +115,8 @@ ARCH=$(find $DIR_PATH -name arm)
 if [ -z $ARCH ]; then
     ARCH=$(find $DIR_PATH -name arm64)
     if [ -z $ARCH ]; then
-        echo "This app is already deodexed."
-        echo "Exiting...."
+        echo -e "${RED}This app is already deodexed."
+        echo -e "Exiting...${NC}"
         exit 1
     else
         ARCH='arm64'
@@ -135,8 +140,9 @@ else
     (mkdir ${HOME}/tmp/framework; cd ${HOME}/tmp/framework; cp -R ${HOME}/system/framework/* .)
     if [ ! -d ${HOME}/tmp/framework/$ARCH/odex ]; then
         echo "Extracting class-path from boot.oat"
-        echo ""
+        echo -e ""${LGREY}
         ${HOME}/oat2dex boot ${HOME}/tmp/framework/$ARCH/boot.oat
+        echo -e ${NC}
     fi
 fi
 
@@ -147,11 +153,12 @@ echo ""
 cp ${HOME}/tmp/$NAME/$FILE ${HOME}/tmp
 
 echo "Creating compatible dex for $FILE"
-echo ""
+echo -e ${LGREY}
 ${HOME}/oat2dex ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.odex ${HOME}/tmp/framework/$ARCH/odex
 
+echo -e ${NC}
 echo "Performing smali operations"
-echo ""
+echo -e ${LGREY}
 #${HOME}/baksmali -a 21 -x ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.dex -d system/framework -o ${HOME}/tmp/smali
 ${HOME}/oat2dex smali ${HOME}/tmp/$NAME/oat/$ARCH/$NAME.dex
 mkdir ${HOME}/tmp/smali
@@ -159,13 +166,14 @@ cp -R ${HOME}/tmp/$NAME/oat/$ARCH/$NAME/* ${HOME}/tmp/smali
 
 ${HOME}/smali ${HOME}/tmp/smali -o ${HOME}/tmp/classes.dex 
 
+echo -e ${NC}
 echo "Pushing dex into" $NAME
 echo ""
-zip -gjq $FILE ${HOME}/tmp/classes.dex
+zip -gjq ${HOME}/tmp/$FILE ${HOME}/tmp/classes.dex
 
 mkdir -p ${HOME}/out
-cp $FILE ${HOME}/out/
+cp ${HOME}/tmp/$FILE ${HOME}/out/
 
-echo "Out:" ${HOME}"/out/"$FILE
+echo -e "${GREEN}Out:" ${HOME}"/out/"$FILE ${NC}
 echo ""
 exit 0
