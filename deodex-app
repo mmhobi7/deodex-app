@@ -11,33 +11,33 @@ FILE=$2
 NC='\033[0m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
 LGREY='\033[0;37m'
-BLUE='\033[0;36m'
 
 case $1 in
     -a) echo ""
-        echo -e "${BLUE}Apk${NC} flag detected"
+        echo -e "${YELLOW}Apk${NC} flag detected"
         MODE=1
         if ! [[ "$FILE" = *.apk ]]; then
             FILE=$FILE.apk
         fi
         shift ;;
     -apk) echo ""
-        echo -e "${BLUE}Apk${NC} flag detected"
+        echo -e "${YELLOW}Apk${NC} flag detected"
         MODE=1
         if ! [[ "$FILE" = *.apk ]]; then
             FILE=$FILE.apk
         fi
         shift ;;
     -j) echo ""
-        echo -e "${BLUE}Framework${NC} flag detected"
+        echo -e "${YELLOW}Framework${NC} flag detected"
         MODE=2
         if ! [[ "$FILE" = *.jar ]]; then
             FILE=$FILE.jar
         fi
         shift ;;
     -jar) echo ""
-        echo -e "${BLUE}Framework${NC} flag detected"
+        echo -e "${YELLOW}Framework${NC} flag detected"
         MODE=2
         if ! [[ "$FILE" = *.jar ]]; then
             FILE=$FILE.jar
@@ -68,28 +68,28 @@ if [ -z "$MODE" ]; then
 
 case $2 in
     -a) echo ""
-        echo -e "${BLUE}Apk${NC} flag detected"
+        echo -e "${YELLOW}Apk${NC} flag detected"
         MODE=1
         if ! [[ "$FILE" = *.apk ]]; then
             FILE=$FILE.apk
         fi
         shift ;;
     -apk) echo ""
-        echo -e "${BLUE}Apk${NC} flag detected"
+        echo -e "${YELLOW}Apk${NC} flag detected"
         MODE=1
         if ! [[ "$FILE" = *.apk ]]; then
             FILE=$FILE.apk
         fi
         shift ;;
     -j) echo ""
-        echo -e "${BLUE}Framework${NC} flag detected"
+        echo -e "${YELLOW}Framework${NC} flag detected"
         MODE=2
         if ! [[ "$FILE" = *.jar ]]; then
             FILE=$FILE.jar
         fi
         shift ;;
     -jar) echo ""
-        echo -e "${BLUE}Framework${NC} flag detected"
+        echo -e "${YELLOW}Framework${NC} flag detected"
         MODE=2
         if ! [[ "$FILE" = *.jar ]]; then
             FILE=$FILE.jar
@@ -116,12 +116,12 @@ esac
         if [[ "$FILE" = *.apk ]]; then
             MODE=1
             echo ""
-            echo -e "${BLUE}Apk${NC} detected"
+            echo -e "${YELLOW}Apk${NC} detected"
         fi
         if [[ "$FILE" = *.jar ]]; then
             MODE=2
             echo ""
-            echo -e "${BLUE}Framework${NC} detected"
+            echo -e "${YELLOW}Framework${NC} detected"
         fi
         if [ -z "$MODE" ]; then
            echo ""
@@ -158,7 +158,7 @@ fi
 
 DIR_PATH=${FULL_PATH%%/$FILE}
 
-echo -e ${BLUE}$FULL_PATH${NC} "detected."
+echo -e ${YELLOW}$FULL_PATH${NC} "detected."
 echo ""
 
 echo "Checking app's architecture,"
@@ -177,7 +177,7 @@ else
     ARCH='arm'
 fi
 
-echo -e ${BLUE}$ARCH${NC} "detected."
+echo -e ${YELLOW}$ARCH${NC} "detected."
 echo ""
 
 echo "Creating workspace"
