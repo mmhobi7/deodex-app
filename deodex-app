@@ -18,13 +18,22 @@ HOME=$(pwd)
 FIND=$(find)
 
 echo "Finding App"
+
+if ! [ -d ${HOME}/system ]; then
+    echo ""
+    echo "Please copy your /system dir here"
+    echo "Exiting...."
+    exit 1
+fi
 FULL_PATH=$(find ${HOME}/system -name $APK)
 if [ -z $FULL_PATH ]; then
     echo "Unable to determine app's location"
     echo "Exiting...."
     exit 1
 fi
+
 DIR_PATH=${FULL_PATH%%/$APK}
+
 echo $FULL_PATH "detected."
 echo ""
 
