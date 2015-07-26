@@ -133,7 +133,11 @@ esac
     fi
 fi
 
-NAME=${FILE%%.*}
+if [ $MODE = 2 ]; then
+    NAME=${FILE%%.jar}
+else
+    NAME=${FILE%%.apk}
+fi
 
 HOME=$(pwd)
 
