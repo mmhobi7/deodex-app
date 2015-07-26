@@ -236,10 +236,10 @@ echo ""
 zip -gjq ${HOME}/tmp/$FILE ${HOME}/tmp/classes.dex
 
 if [ $MODE = 2 ]; then
-    mkdir -p ${HOME}/out
-    cp ${HOME}/tmp/$FILE ${HOME}/out
+    mkdir -p ${HOME}/out/framework
+    cp ${HOME}/tmp/$FILE ${HOME}/out/framework
 
-    echo -e "${GREEN}Out:" ${HOME}"/out/"$FILE ${NC}
+    echo -e "${GREEN}Out:" ${HOME}"/out/framework"$FILE ${NC}
 else
     if [[ $DIR_PATH/ = */app* ]]; then
         TYPE=app
