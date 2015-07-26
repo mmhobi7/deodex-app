@@ -235,9 +235,17 @@ echo "Pushing dex into" $NAME
 echo ""
 zip -gjq ${HOME}/tmp/$FILE ${HOME}/tmp/classes.dex
 
-mkdir -p ${HOME}/out
-cp ${HOME}/tmp/$FILE ${HOME}/out/
+if [ $MODE = 2 ]; then
+    mkdir -p ${HOME}/out
+    cp ${HOME}/tmp/$FILE ${HOME}/out
 
-echo -e "${GREEN}Out:" ${HOME}"/out/"$FILE ${NC}
+    echo -e "${GREEN}Out:" ${HOME}"/out/"$FILE ${NC}
+else
+    mkdir -p ${HOME}/out/$NAME
+    cp ${HOME}/tmp/$FILE ${HOME}/out/$NAME
+
+    echo -e "${GREEN}Out:" ${HOME}"/out/"$NAME"/"$FILE ${NC}
+fi
+
 echo ""
 exit 0
