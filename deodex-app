@@ -241,10 +241,20 @@ if [ $MODE = 2 ]; then
 
     echo -e "${GREEN}Out:" ${HOME}"/out/"$FILE ${NC}
 else
-    mkdir -p ${HOME}/out/$NAME
-    cp ${HOME}/tmp/$FILE ${HOME}/out/$NAME
+    if [[ $DIR_PATH/ = */app* ]]; then
+        TYPE=app
+    else
+        if [[ $DIR_PATH/ = */priv-app* ]]; then
+            TYPE=priv-app
+        else
+            TYPE=.
+        fi
+    fi
 
-    echo -e "${GREEN}Out:" ${HOME}"/out/"$NAME"/"$FILE ${NC}
+    mkdir -p ${HOME}/out/$TYPE/$NAME
+    cp ${HOME}/tmp/$FILE ${HOME}/out/$TYPE/$NAME
+
+    echo -e "${GREEN}Out:" ${HOME}"/out/"$TYPE"/"$NAME"/"$FILE ${NC}
 fi
 
 echo ""

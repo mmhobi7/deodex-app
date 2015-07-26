@@ -5,5 +5,13 @@
 # Aaahh - 7/15
 #
 
+NC='\033[0m'
+BLUE='\033[0;34m'
+
+echo -e ${BLUE}Apps${NC}
 cd system/app
+for i in $(ls -d */); do cd ~/deodex-app; ~/deodex-app/deodex-app -a ${i%%/}; done
+
+echo -e ${BLUE}Priv-apps${NC}
+cd system/priv-app
 for i in $(ls -d */); do cd ~/deodex-app; ~/deodex-app/deodex-app -a ${i%%/}; done
