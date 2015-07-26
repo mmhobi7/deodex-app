@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# Script to deodex all apps
+
+# Aaahh - 7/15
+#
+
+cd system/app
+for i in $(ls -d */); do cd ../../; ~/deodex-app/deodex-app -a ${i%%/}; done
