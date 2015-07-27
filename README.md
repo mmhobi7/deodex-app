@@ -1,6 +1,8 @@
 deodex-app
 
-Warining: Does not deodex bootclass frameworks (frameworks in boot.oat/boot.art), check the system's /boot image to find which frameworks are in the boot class...
+http://forum.xda-developers.com/android/software-hacking/dev-android-m-apps-framework-deodexing-t3166000
+
+Warining: Does not deodex bootclass frameworks (frameworks in boot.oat/boot.art), check the system's /boot image to find which frameworks are in the boot class... Or /tmp/framework/boot/dex if you used this script.
 
 
 Copy your /system dir to the dir of the script
