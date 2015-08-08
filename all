@@ -8,14 +8,16 @@
 NC='\033[0m'
 BLUE='\033[0;34m'
 
+HOME=$(pwd)
+
 echo -e ${BLUE}"Apps"${NC}
 cd system/app
-for i in $(ls -d */); do cd ~/deodex-app; ~/deodex-app/deodex-app -a ${i%%/}; done
+for i in $(ls -d */); do cd ${HOME}; ${HOME}/deodex-app -a ${i%%/}; done
 
 echo -e ${BLUE}"Priv-apps"${NC}
 cd system/priv-app
-for i in $(ls -d */); do cd ~/deodex-app; ~/deodex-app/deodex-app -a ${i%%/}; done
+for i in $(ls -d */); do cd ${HOME}; ${HOME}/deodex-app -a ${i%%/}; done
 
 echo -e ${BLUE}"Frameworks (NOT PERFECT)"${NC}
 cd system/framework
-for i in $(ls -p | grep -v /); do cd ~/deodex-app; ~/deodex-app/deodex-app -j ${i%%/}; done
+for i in $(ls -p | grep -v /); do cd ${HOME}; ${HOME}/deodex-app -j ${i%%/}; done
